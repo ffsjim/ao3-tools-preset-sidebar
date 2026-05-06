@@ -71,34 +71,60 @@
       input.checked = (txt === labelText);
     });
   }
+function readPresetFromForm() {
+  // Ensure AO3 form fields exist before reading
+  const titleEl = document.querySelector("#work_title");
+  const summaryEl = document.querySelector("#work_summary");
+  const notesEl = document.querySelector("#work_notes");
+  const langEl = document.querySelector("#work_language_id");
+  const ratingEl = document.querySelector("#work_rating_string");
 
-  function readPresetFromForm() {
-    var ratingSel = $("#work_rating_string");
-    var rating = ratingSel ? ratingSel.value : "";
-
-    var warningChecked = document.querySelector("input[name='work[archive_warning_ids][]']:checked");
-    var warningLabel = warningChecked && warningChecked.nextElementSibling ? warningChecked.nextElementSibling.innerText.trim() : "";
-
-    var catChecked = document.querySelector("input[name='work[category_ids][]']:checked");
-    var catLabel = catChecked && catChecked.nextElementSibling ? catChecked.nextElementSibling.innerText.trim() : "";
-
-    var langSel = $("#work_language_id");
-    var lang = langSel ? langSel.value : "";
-
+  // If the form isn't ready, return an empty object
+  if (!titleEl || !summaryEl || !notesEl || !langEl || !ratingEl) {
+    console.warn("AO3 preset sidebar: form not fully loaded when saving preset");
     return {
-      title: $("#work_title") ? $("#work_title").value : "",
-      summary: $("#work_summary") ? $("#work_summary").value : "",
-      notes: $("#work_notes") ? $("#work_notes").value : "",
-      language: lang,
-      rating: rating,
-      warning: warningLabel,
-      category: catLabel,
-      fandoms: getTags("#work_fandom_string"),
-      relationships: getTags("#work_relationship_string"),
-      characters: getTags("#work_character_string"),
-      tags: getTags("#work_freeform_string")
+      title: "",
+      summary: "",
+      notes: "",
+      language: "",
+      rating: "",
+      warning: "",
+      category: "",
+      fandoms: [],
+      relationships: [],
+      characters: [],
+      tags: []
     };
   }
+
+  // Read warning
+  let warningLabel = "";
+  const warningChecked = document.querySelector("input[name='work[archive_warning_ids][]']:checked");
+  if (warningChecked && warningChecked.nextElementSibling) {
+    warningLabel = warningChecked.nextElementSibling.innerText.trim();
+  }
+
+  // Read category
+  let categoryLabel = "";
+  const catChecked = document.querySelector("input[name='work[category_ids][]']:checked");
+  if (catChecked && catChecked.nextElementSibling) {
+    categoryLabel = catChecked.nextElementSibling.innerText.trim();
+  }
+
+  return {
+    title: titleEl.value || "",
+    summary: summaryEl.value || "",
+    notes: notesEl.value || "",
+    language: langEl.value || "",
+    rating: ratingEl.value || "",
+    warning: warningLabel,
+    category: categoryLabel,
+    fandoms: getTags("#work_fandom_string"),
+    relationships: getTags("#work_relationship_string"),
+    characters: getTags("#work_character_string"),
+    tags: getTags("#work_freeform_string")
+  };
+}
 
   // -----------------------------
   // Bundles
