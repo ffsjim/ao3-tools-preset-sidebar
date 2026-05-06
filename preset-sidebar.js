@@ -72,30 +72,46 @@
     });
   }
 function readPresetFromForm() {
-  // Ensure AO3 form fields exist before reading
-  const titleEl = document.querySelector("#work_title");
-  const summaryEl = document.querySelector("#work_summary");
-  const notesEl = document.querySelector("#work_notes");
-  const langEl = document.querySelector("#work_language_id");
-  const ratingEl = document.querySelector("#work_rating_string");
-
-  // If the form isn't ready, return an empty object
-  if (!titleEl || !summaryEl || !notesEl || !langEl || !ratingEl) {
-    console.warn("AO3 preset sidebar: form not fully loaded when saving preset");
-    return {
-      title: "",
-      summary: "",
-      notes: "",
-      language: "",
-      rating: "",
-      warning: "",
-      category: "",
-      fandoms: [],
-      relationships: [],
-      characters: [],
-      tags: []
-    };
+  function safe(sel) {
+    const el = document.querySelector(sel);
+    return el ? el.value : "";
   }
+
+  function safeTags(sel) {
+    const el = document.querySelector(sel);
+    if (!el || !el.value) return [];
+    return el.value.split(",").map(s => s.trim()).filter(Boolean);
+  }
+
+  // Read warning
+  let warningLabel = "";
+  const warningChecked = document.querySelector("input[name='work[archive_warning_ids][]']:checked");
+  if (warningChecked && warningChecked.nextElementSibling) {
+    warningLabel = warningChecked.nextElementSibling.innerText.trim();
+  }
+
+  // Read category
+  let categoryLabel = "";
+  const catChecked = document.querySelector("input[name='work[category_ids][]']:checked");
+  if (catChecked && catChecked.nextElementSibling) {
+    categoryLabel = catChecked.nextElementSibling.innerText.trim();
+  }
+
+  return {
+    title: safe("#work_title"),
+    summary: safe("#work_summary"),
+    notes: safe("#work_notes"),
+    language: safe("#work_language_id"),
+    rating: safe("#work_rating_string"),
+    warning: warningLabel,
+    category: categoryLabel,
+    fandoms: safeTags("#work_fandom_string"),
+    relationships: safeTags("#work_relationship_string"),
+    characters: safeTags("#work_character_string"),
+    tags: safeTags("#work_freeform_string")
+  };
+}
+
 
   // Read warning
   let warningLabel = "";
