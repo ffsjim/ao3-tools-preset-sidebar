@@ -760,21 +760,28 @@
   }
 
 // -----------------------------
-// Init on AO3 forms (patched)
+// Ultra‑reliable AO3 form detection
 // -----------------------------
-function waitForForm() {
-  // AO3 loads the form dynamically, so we wait until it exists
-  const form = document.querySelector("#new_work, form.edit_work");
-  if (form) {
+function formExists() {
+  return (
+    document.querySelector("#new_work") ||
+    document.querySelector("form.edit_work") ||
+    document.querySelector("form[action*='/works'][method='post']") ||
+    document.querySelector("textarea#work_summary") ||
+    document.querySelector("input#work_title")
+  );
+}
+
+function waitForAO3Form() {
+  if (formExists()) {
     console.log("AO3 preset sidebar: form detected, building sidebar");
     buildSidebar();
   } else {
-    // Try again in 200ms
-    setTimeout(waitForForm, 200);
+    setTimeout(waitForAO3Form, 150);
   }
 }
 
-// Start checking immediately
-waitForForm();
+waitForAO3Form();
+
 
 })();
