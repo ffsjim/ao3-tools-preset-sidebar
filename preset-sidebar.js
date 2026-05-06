@@ -759,9 +759,22 @@
     buildSidebar();
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initIfOnWorkForm);
+// -----------------------------
+// Init on AO3 forms (patched)
+// -----------------------------
+function waitForForm() {
+  // AO3 loads the form dynamically, so we wait until it exists
+  const form = document.querySelector("#new_work, form.edit_work");
+  if (form) {
+    console.log("AO3 preset sidebar: form detected, building sidebar");
+    buildSidebar();
   } else {
-    initIfOnWorkForm();
+    // Try again in 200ms
+    setTimeout(waitForForm, 200);
   }
+}
+
+// Start checking immediately
+waitForForm();
+
 })();
