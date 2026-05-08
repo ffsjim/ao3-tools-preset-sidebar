@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "AO3 Preset Sidebar",
+  "version": "1.0.0",
+  "description": "Custom preset + bundle sidebar for AO3 work forms.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [],
+  "host_permissions": [
+    "https://archiveofourown.org/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://archiveofourown.org/works/new*",
+        "https://archiveofourown.org/works/*/edit*"
+      ],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
